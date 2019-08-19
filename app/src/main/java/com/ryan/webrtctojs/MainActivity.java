@@ -30,7 +30,8 @@ public class MainActivity extends Activity {
         String[] perms = {
                 Manifest.permission.CAMERA,
                 Manifest.permission.INTERNET,
-                Manifest.permission.RECORD_AUDIO
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
         };
 
         if (!EasyPermissions.hasPermissions(this, perms)) {
@@ -38,12 +39,18 @@ public class MainActivity extends Activity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
     /**
      * 点击加入房间
      * @param view
      */
     public void onJoinClick(View view) {
-        String service = mEditService.getText().toString();
+        String service = mEditService.getText().toString(); // 注意这里需要https
         String room = mEditRoom.getText().toString();
 
         if (TextUtils.isEmpty(service) || TextUtils.isEmpty(room)) {

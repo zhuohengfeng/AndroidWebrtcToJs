@@ -8,7 +8,7 @@ var btnLeave = document.querySelector('button#leave');
 
 var offer = document.querySelector('textarea#offer');
 var answer = document.querySelector('textarea#answer');
-
+// 共享桌面
 var shareDeskBox  = document.querySelector('input#shareDesk');
 
 var pcConfig = {
@@ -90,7 +90,7 @@ function sendMessage(roomid, data){
 
 function conn(){
 
-	socket = io.connect();
+	socket = io.connect(); // 连接socket
 
 	socket.on('joined', (roomid, id) => {
 		console.log('receive joined message!', roomid, id);
@@ -101,8 +101,8 @@ function conn(){
 		//所以，在这个消息里应该带当前房间的用户数
 		//
 		//create conn and bind media track
-		createPeerConnection();
-		bindTracks();
+		createPeerConnection(); // 创建PC
+		bindTracks(); // 绑定音视频到stream
 
 		btnConn.disabled = true;
 		btnLeave.disabled = false;
@@ -177,7 +177,7 @@ function conn(){
 			console.error('the message is invalid!');
 			return;	
 		}
-
+        // 这里传的是json格式，所以可以看下是否有type类型
 		if(data.hasOwnProperty('type') && data.type === 'offer') {
 			
 			offer.value = data.sdp;
@@ -204,11 +204,9 @@ function conn(){
 			console.log('the message is invalid!', data);
 		
 		}
-	
 	});
 
-
-	roomid = getQueryVariable('room');
+	roomid = getQueryVariable('room'); // 获取roomid，发起join
 	socket.emit('join', roomid);
 
 	return true;
@@ -223,7 +221,7 @@ function connSignalServer(){
 }
 
 function getMediaStream(stream){
-
+    // 获取本地视频流
 	if(localStream){
 		stream.getAudioTracks().forEach((track)=>{
 			localStream.addTrack(track);	
@@ -300,7 +298,7 @@ function start(){
 				}
 			}
 		}
-
+        // 获取本地音视频
 		navigator.mediaDevices.getUserMedia(constraints)
 					.then(getMediaStream)
 					.catch(handleError);
@@ -346,7 +344,7 @@ function createPeerConnection(){
 	//key=userid, value=peerconnection
 	console.log('create RTCPeerConnection!');
 	if(!pc){
-		pc = new RTCPeerConnection(pcConfig);
+		pc = new RTCPeerConnection(pcConfig); // 放入ice server配置
 
 		pc.onicecandidate = (e)=>{
 

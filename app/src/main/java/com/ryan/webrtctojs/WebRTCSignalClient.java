@@ -3,6 +3,13 @@ package com.ryan.webrtctojs;
 import android.util.Log;
 
 import java.net.URISyntaxException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -16,7 +23,7 @@ public class WebRTCSignalClient {
     private static WebRTCSignalClient mInstance;
 
     public static final String SIG_SERVER_JOINED = "joined";
-    public static final String SIG_SERVER_OTHER_JOINED = "other_joined";
+    public static final String SIG_SERVER_OTHER_JOINED = "otherjoin";
     public static final String SIG_SERVER_LEAVED = "leaved";
     public static final String SIG_SERVER_BYE = "bye";
     public static final String SIG_SERVER_FULL = "full";
@@ -49,12 +56,31 @@ public class WebRTCSignalClient {
      */
     public boolean joinRoom(String url, String roomName) {
         Log.d(TAG, "===>joinRoom() 开始连接信令服务器，加入房间 url="+url+", roomName="+roomName);
-
         // 连接信令服务器
         try {
-            mSocket = IO.socket(url);
+            // Set default ssl context
+            IO.setDefaultSSLContext(SSLContext.getDefault());
+
+            // Set default hostname
+            HostnameVerifier hostnameVerifier = new HostnameVerifier() {
+                @Override
+                public boolean verify(String hostname, SSLSession session) {
+                    HostnameVerifier hv = HttpsURLConnection.getDefaultHostnameVerifier();
+                    return hv.verify(url, session);
+                }
+            };
+            IO.setDefaultHostnameVerifier(hostnameVerifier);
+
+            // Configure options
+            IO.Options options = new IO.Options();
+            // set as an option
+            options.sslContext = SSLContext.getDefault();
+            options.hostnameVerifier = hostnameVerifier;
+            options.secure = true;
+
+            mSocket = IO.socket(url, options);
             mSocket.connect();
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
