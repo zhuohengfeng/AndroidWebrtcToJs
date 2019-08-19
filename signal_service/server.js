@@ -31,6 +31,8 @@ var io = socketIo.listen(https_server);
 // 创建信令服务器
 io.sockets.on('connection', (socket)=> {
 
+    console.log('===> has a client connection!!!');
+
     // 收到消息，直接转换给room中的其他用户
 	socket.on('message', (room, data)=>{
 		socket.to(room).emit('message',room, data);

@@ -17,7 +17,6 @@ public class CallActivity extends Activity {
     // 打印log
     private TextView mLogcatView;
 
-
     // Opengl es
     private EglBase mRootEglBase;
     // 纹理渲染
@@ -46,18 +45,11 @@ public class CallActivity extends Activity {
         String roomName = getIntent().getStringExtra("RoomName");
 
         // 进入这个界面后就开始连接信令服务器，并加入房间
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean result = WebRTCSignalClient.getInstance().joinRoom(serverAddr, roomName);
-                if (!result) {
-                    Toast.makeText(CallActivity.this, "无法连接信令服务器，退出！", Toast.LENGTH_LONG).show();
-                    CallActivity.this.finish();
-                }
-            }
-        }).start();
-
-
+        boolean result = WebRTCSignalClient.getInstance().joinRoom(serverAddr, roomName);
+        if (!result) {
+            Toast.makeText(CallActivity.this, "无法连接信令服务器，退出！", Toast.LENGTH_LONG).show();
+            CallActivity.this.finish();
+        }
     }
 
     @Override
