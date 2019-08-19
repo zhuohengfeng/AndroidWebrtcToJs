@@ -11,3 +11,5 @@
 /build
 /captures
 .externalNativeBuild
+/signal_service/node_modules
+/signal_service/app.log

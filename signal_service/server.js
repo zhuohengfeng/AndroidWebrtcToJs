@@ -43,8 +43,8 @@ var http_server = http.createServer(app);
 http_server.listen(80, '0.0.0.0');
 
 var options = {
-	key : fs.readFileSync('./cert/1557605_www.learningrtc.cn.key'),
-	cert: fs.readFileSync('./cert/1557605_www.learningrtc.cn.pem')
+	key : fs.readFileSync('./cert/server.key'),
+	cert: fs.readFileSync('./cert/cert.pem')
 }
 
 //https server
