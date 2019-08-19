@@ -15,7 +15,7 @@
     <EditText
         android:id="@+id/EditService"
         android:layout_margin="10dp"
-        android:text = "rokid_glass"
+        android:text = "http://10.88.1.8:443/"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

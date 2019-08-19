@@ -1,6 +1,5 @@
 'use strict'
 
-var log4js = require('log4js');
 var http = require('http');
 var https = require('https');
 var fs = require('fs');
@@ -11,31 +10,10 @@ var serveIndex = require('serve-index');
 
 var USERCOUNT = 3;
 
-log4js.configure({
-    appenders: {
-        file: {
-            type: 'file',
-            filename: 'app.log',
-            layout: {
-                type: 'pattern',
-                pattern: '%r %p - %m',
-            }
-        }
-    },
-    categories: {
-       default: {
-          appenders: ['file'],
-          level: 'debug'
-       }
-    }
-});
-
-var logger = log4js.getLogger();
 
 var app = express();
 app.use(serveIndex('./public'));
 app.use(express.static('./public'));
-
 
 
 //http server
@@ -63,7 +41,7 @@ io.sockets.on('connection', (socket)=> {
 		socket.join(room);
 		var myRoom = io.sockets.adapter.rooms[room];
 		var users = (myRoom)? Object.keys(myRoom.sockets).length : 0;
-		logger.debug('the user number of room is: ' + users);
+		console.log('the user number of room is: ' + users);
 
 		if(users < USERCOUNT){
 			socket.emit('joined', room, socket.id); //发给除自己之外的房间内的所有人
@@ -83,7 +61,7 @@ io.sockets.on('connection', (socket)=> {
 	socket.on('leave', (room)=>{
 		var myRoom = io.sockets.adapter.rooms[room];
 		var users = (myRoom)? Object.keys(myRoom.sockets).length : 0;
-		logger.debug('the user number of room is: ' + (users-1));
+		console.log('the user number of room is: ' + (users-1));
 		//socket.emit('leaved', room, socket.id);
 		//socket.broadcast.emit('leaved', room, socket.id);
 		socket.to(room).emit('bye', room, socket.id);
@@ -94,5 +72,6 @@ io.sockets.on('connection', (socket)=> {
 });
 
 // 监听本地443
+console.log('start the signal service @ ' + 443);
 https_server.listen(443, '0.0.0.0');
 

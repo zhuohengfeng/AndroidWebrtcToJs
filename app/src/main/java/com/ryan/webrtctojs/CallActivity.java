@@ -42,11 +42,6 @@ public class CallActivity extends Activity {
 
         mRootEglBase = EglBase.create();
 
-
-
-
-
-
         String serverAddr = getIntent().getStringExtra("ServerAdd");
         String roomName = getIntent().getStringExtra("RoomName");
 
